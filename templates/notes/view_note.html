@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ note.title }}</title>
+</head>
+<body>
+
+    <h2>{{ note.title }}</h2>
+
+    {% if note.description %}
+        <p><strong>Description:</strong> {{ note.description }}</p>
+    {% endif %}
+
+    <p><strong>Course:</strong> {{ note.course }}</p>
+    <p><strong>Subject:</strong> {{ note.subject }}</p>
+    <p><strong>Semester:</strong> {{ note.semester }}</p>
+    <p><strong>Uploaded by:</strong> {{ note.uploaded_by.username }}</p>
+    <p><strong>Uploaded at:</strong> {{ note.uploaded_at }}</p>
+
+    {% if file_url %}
+        <p>
+            <a href="{{ file_url }}" download>Download</a>
+        </p>
+        <p>
+            <a href="{{ file_url }}" target="_blank">View in Browser</a>
+        </p>
+    {% else %}
+        <p>No file uploaded for this note.</p>
+    {% endif %}
+
+    <p><a href="{% url 'note_list' %}">Back to all notes</a></p>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - StudySetU{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card shadow-md">
+        <div class="card-header">
+          <h3 class="mb-0 text-center">👤 My Profile</h3>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center mb-4">
+            <div class="col-md-4 text-center">
+              {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="avatar-lg mb-3">
+              {% else %}
+                <img src="{% static 'images/default-avatar.png' %}" 
+                     onerror="this.src='https://ui-avatars.com/api/?name={{ user.username }}&size=120&background=4A90E2&color=fff'"
+                     alt="Avatar" class="avatar-lg mb-3">
+              {% endif %}
+              <a href="{% url 'edit_profile' %}" class="btn btn-primary btn-sm">
+                ✏️ Edit Profile
+              </a>
+            </div>
+            <div class="col-md-8">
+              <div class="profile-info">
+                <div class="mb-3">
+                  <label class="text-muted small">Username</label>
+                  <h4 class="mb-0">{{ user.username }}</h4>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted small">Email Address</label>
+                  <p class="mb-0">{{ user.email }}</p>
+                </div>
+                <div class="mb-3">
+                  <label class="text-muted small">Member Since</label>
+                  <p class="mb-0">{{ user.date_joined|date:"F d, Y" }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <hr>
+          
+          <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+              <a href="{% url 'my_notes' %}" class="btn btn-outline-primary w-100">
+                📚 My Notes
+              </a>
+            </div>
+            <div class="col-md-6 mb-3">
+              <a href="{% url 'upload_note' %}" class="btn btn-outline-success w-100">
+                📤 Upload Note
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

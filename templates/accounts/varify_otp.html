@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify OTP - StudySetU{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-md">
+                <div class="card-header">
+                    <h4 class="mb-0 text-center">✅ Verify OTP</h4>
+                    <small class="text-white-50 d-block text-center mt-2">Enter the 6-digit code sent to your email</small>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger">
+                        <strong>⚠️ Error:</strong> {{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group mb-4">
+                            <label for="otp" class="form-label">
+                                <strong>🔢 Enter OTP</strong>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control text-center" 
+                                id="otp" 
+                                name="otp" 
+                                placeholder="000000"
+                                maxlength="6"
+                                pattern="[0-9]{6}"
+                                style="font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: bold;"
+                                required
+                                autofocus
+                            >
+                            <small class="form-text text-muted text-center d-block mt-2">
+                                Check your email for the 6-digit code. It expires in 5 minutes.
+                            </small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <span>✓</span> Verify OTP
+                        </button>
+                    </form>
+                    
+                    <div class="text-center">
+                        <a href="{% url 'forgot_password' %}" class="btn btn-link">
+                            ← Resend OTP
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-format OTP input
+    document.getElementById('otp').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+</script>
+{% endblock %}

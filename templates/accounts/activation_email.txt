@@ -1,0 +1,6 @@
+Hi {{ user.username }},
+
+Please activate your StudySetU account:
+{{ activation_link }}
+
+If you didn't request this, ignore this email.

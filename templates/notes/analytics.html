@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Analytics</h2>
+<p><strong>Total notes:</strong> {{ total_notes }}</p>
+<p><strong>Total downloads:</strong> {{ total_downloads }}</p>
+
+<h3>Notes per User</h3>
+<table class="table">
+  <tr><th>User</th><th>Notes</th></tr>
+  {% for row in notes_by_user %}
+    <tr><td>{{ row.uploaded_by__username }}</td><td>{{ row.c }}</td></tr>
+  {% endfor %}
+</table>
+
+<h3>Top 10 Notes by Downloads</h3>
+<table class="table">
+  <tr><th>Note</th><th>Downloads</th></tr>
+  {% for row in downloads_top %}
+    <tr><td>{{ row.title }}</td><td>{{ row.d }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

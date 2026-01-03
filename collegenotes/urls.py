@@ -1,0 +1,34 @@
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from notes import views
+from accounts import views as account_views
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('notes/', include('notes.urls')),
+    path('', include('notes.urls')),
+    path('download/<int:note_id>/', views.download_note, name='download_note'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='note_list'), name='logout'),
+    path("forgot-password/", account_views.send_otp_view, name="forgot_password"),  # send_otp_view used here
+    path("verify-otp/", account_views.verify_otp_view, name="verify_otp"),
+    path("reset-password/", account_views.reset_password_view, name="reset_password"),
+    # Password reset (built-in)
+    #path('accounts/password-reset/', auth_views.PasswordResetView.as_view(
+    #    template_name='accounts/password_reset.html'
+    #), name='password_reset'),
+    path('accounts/password-reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='accounts/password_reset_done.html'
+    ), name='password_reset_done'),
+    #path('accounts/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+    #    template_name='accounts/password_reset_confirm.html'
+    #), name='password_reset_confirm'),
+    path('accounts/reset/done/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='accounts/password_reset_complete.html'
+    ), name='password_reset_complete'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
