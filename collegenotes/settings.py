@@ -27,6 +27,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -34,6 +35,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = 'collegenotes.urls'
 
@@ -73,16 +75,16 @@ USE_I18N = True
 USE_TZ = True
 
 # static files (css, js, images)
+from pathlib import Path
+
 BASE_DIR = Path(__file__).resolve().parent.parent
--74,30 +73,33 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Email (use real creds or console backend for local testing)
