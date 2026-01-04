@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -72,7 +74,9 @@ USE_TZ = True
 
 # static files (css, js, images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),
+]
 
 # Email (use real creds or console backend for local testing)
 # For development/testing, use console backend to see emails in terminal:
