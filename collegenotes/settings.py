@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,11 +75,13 @@ USE_TZ = True
 # static files (css, js, images)
 STATIC_URL = '/static/'
 
+# Local static folder (jisme tumhari images, CSS, JS rakhe hote hain)
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, 'static'),
 ]
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# Render / Production ke liye — collectstatic yaha files banayega
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Email (use real creds or console backend for local testing)
 # For development/testing, use console backend to see emails in terminal:
