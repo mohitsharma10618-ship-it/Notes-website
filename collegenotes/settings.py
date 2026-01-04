@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-change-this-to-a-secure-key'
 
 # development
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # apps
 INSTALLED_APPS = [
