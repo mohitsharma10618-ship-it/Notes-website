@@ -8,8 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-change-this-to-a-secure-key'
 
 # development
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+DEBUG = False
+ALLOWED_HOSTS = [
+    "notes-website-myqz.onrender.com",
+    "localhost",
+    "127.0.0.1"
+    ]
 
 # apps
 INSTALLED_APPS = [
