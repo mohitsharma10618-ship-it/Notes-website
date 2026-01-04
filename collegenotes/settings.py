@@ -11,9 +11,15 @@ SECRET_KEY = 'django-insecure-change-this-to-a-secure-key'
 DEBUG = False
 ALLOWED_HOSTS = [
     "notes-website-myqz.onrender.com",
+    ".onrender.com",
     "localhost",
     "127.0.0.1"
     ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://notes-website-myvq.onrender.com",
+    "https://*.onrender.com",
+]
 
 # apps
 INSTALLED_APPS = [
