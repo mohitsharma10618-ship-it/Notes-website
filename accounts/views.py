@@ -94,7 +94,10 @@ def register(request):
             'user': user,
             'activation_link': activation_link,
         })
-        send_mail(subject, message, None, [email])
+        try:
+             send_mail(subject, message, None, [email])
+        except Exception as e:
+             print("Email error:", e)
 
         messages.success(request, "Check your email to activate your account.")
         return redirect('auth_toggle')
@@ -132,8 +135,8 @@ def activate(request, uidb64, token):
 
 def send_otp_view(request):
     # Clear any previous debug OTP
-    if "debug_otp" in request.session:
-        del request.session["debug_otp"]
+    # if "debug_otp" in request.session:
+    #     del request.session["debug_otp"]
     
     if request.method == "POST":
         email = request.POST.get("email", "").strip()

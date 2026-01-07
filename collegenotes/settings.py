@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-change-this-to-a-secure-key'
 # development
 DEBUG = False
 ALLOWED_HOSTS = [
-    "notes-website-myqz.onrender.com",
+    "notes-website-myvq.onrender.com",
     ".onrender.com",
     "localhost",
     "127.0.0.1"
@@ -92,7 +92,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "static"
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -105,9 +105,9 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "mohitsharma10618@gmail.com"
-EMAIL_HOST_PASSWORD = "xywj llsj qsrs vfxr"  # Gmail App Password
-DEFAULT_FROM_EMAIL = "mohitsharma10618@gmail.com"  # Use simple format for better compatibility
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")  # Your Gmail address
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")  # Gmail App Password
+DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_HOST_USER")  # Use simple format for better compatibility
 
 # media files (uploads)
 MEDIA_URL = '/media/'

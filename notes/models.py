@@ -19,7 +19,11 @@ class Note(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     file = models.FileField(upload_to="note_list/",null=True, blank=True,default=None)  # for file list
 
-    download_count = models.PositiveIntegerField(default=0)  # NEW
-
-    def __str__(self):
-        return self.title
+class Event(models.Model):
+     title = models.CharField(max_length=200)
+     description = models.TextField()
+     date = models.DateField()
+     created_at = models.DateTimeField(auto_now_add=True)
+        
+def __str__(self):
+    return self.title

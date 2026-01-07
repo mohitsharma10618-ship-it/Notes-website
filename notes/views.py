@@ -15,6 +15,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.files.storage import default_storage
+from.models import Event
+from django.core.mail import send_mail
 
 
 
@@ -54,6 +56,15 @@ def upload_note(request):
             note.uploaded_by = request.user
             note.save()
             messages.success(request, 'Note uploaded successfully.')
+            # 🔔 EMAIL NOTIFICATION (YAHI ADD KARNA HAI)
+            users = User.objects.exclude(email='').values_list('email', flat=True)
+            send_mail(
+                subject="📢 New Notes Uploaded!",
+                message="A new note has been uploaded on NotesSetu. Visit the website to check it out.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=list(users),
+                fail_silently=False,
+            )
             return redirect('note_list')
     else:
         form = NoteForm()
@@ -135,3 +146,7 @@ def analytics(request):
         'notes_by_user': notes_by_user,
         'downloads_top': downloads_top,
     })
+
+def events_list(request):
+    events = Event.objects.order_by('-date')
+    return render(request, 'notes/events.html', {'events': events})
