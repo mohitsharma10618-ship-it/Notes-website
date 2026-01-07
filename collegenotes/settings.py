@@ -4,22 +4,13 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# TODO: change this in production
-SECRET_KEY = 'django-insecure-change-this-to-a-secure-key'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback-secret")
 
-# development
-DEBUG = False
-ALLOWED_HOSTS = [
-    "notes-website-myvq.onrender.com",
-    ".onrender.com",
-    "localhost",
-    "127.0.0.1"
-    ]
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://notes-website-myvq.onrender.com",
-    "https://*.onrender.com",
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 # apps
 INSTALLED_APPS = [
