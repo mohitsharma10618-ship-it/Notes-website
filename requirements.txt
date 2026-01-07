@@ -69,4 +69,5 @@ yarl==1.20.1
 gunicorn
 whitenoise>=6.6.0
 Django>=5.0
-
+psycopg2-binary
+dj-database-url
