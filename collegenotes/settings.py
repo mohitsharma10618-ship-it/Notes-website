@@ -13,6 +13,8 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
+AUTH_USER_MODEL = "accounts.User"
+
 # apps
 INSTALLED_APPS = [
     'django.contrib.admin',
