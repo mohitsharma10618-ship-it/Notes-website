@@ -114,3 +114,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'auth-toggle'
 LOGIN_URL = '/accounts/login/'
+
+if os.environ.get("RENDER"):
+    try:
+        from create_superuser import *
+    except Exception as e:
+        print(e)
