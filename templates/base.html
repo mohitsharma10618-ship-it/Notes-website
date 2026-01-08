@@ -19,7 +19,9 @@
       <a class="navbar-brand d-flex align-items-center" href="{% url 'note_list' %}" style="text-decoration: none;">
         <img src="{% static 'images/image.png' %}" alt="StudySetU Logo" height="50" class="me-2" style="max-width: 150px;">
       </a>
-      <span class="college-badge">SRGC</span>
+      <span class="college-badge {% if user.is_authenticated %} ms-2 {% else %} mx-auto {% endif %}">
+        SRGC
+      </span>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
