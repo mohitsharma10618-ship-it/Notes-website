@@ -115,26 +115,3 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'auth-toggle'
 LOGIN_URL = '/accounts/login/'
 
-import os
-
-if os.environ.get("RENDER") == "true":
-    try:
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-
-        username = os.environ.get("DJ_SUPERUSER_NAME")
-        email = os.environ.get("DJ_SUPERUSER_EMAIL")
-        password = os.environ.get("DJ_SUPERUSER_PASSWORD")
-
-        if username and password:
-            if not User.objects.filter(username=username).exists():
-                User.objects.create_superuser(
-                    username=username,
-                    email=email,
-                    password=password
-                )
-                print("✅ Superuser created")
-            else:
-                print("ℹ️ Superuser already exists")
-    except Exception as e:
-        print("❌ Superuser error:", e)
