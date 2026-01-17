@@ -13,10 +13,9 @@ from .tokens import account_activation_token  # custom token generator
 from django.http import HttpResponse
 from django.conf import settings
 import random
-from django.contrib.auth.models import User
 from .models import PasswordResetOTP  # model to store OTPs
-from django.shortcuts import render,redirect
 from django.contrib.auth.hashers import make_password
+from .models import Profile
 
 @login_required
 def profile(request):
@@ -49,8 +48,12 @@ def auth_toggle(request):
             user = authenticate(request, username=username, password=password)
 
             if user is not None:
+                if not user.is_active:
+                    messages.error(request, "Please activate your account via email first.")
+                    return redirect('auth_toggle')
+
                 login(request, user)
-                return redirect('note_list')   # ✅ go to notes
+                return redirect('note_list')
             else:
                 messages.error(request, "Invalid username or password")
                 return redirect('auth_toggle')
@@ -81,6 +84,10 @@ def register(request):
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken.")
             return redirect('register')
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered.")
+            return redirect('register')
 
         user = User.objects.create_user(username=username, email=email, password=password1, is_active=False)
 
@@ -94,6 +101,7 @@ def register(request):
             'user': user,
             'activation_link': activation_link,
         })
+
         try:
              send_mail(subject, message, None, [email])
         except Exception as e:
@@ -119,17 +127,16 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         
-        # Automatically log in the user after activation
-        login(request, user)
-        
         # Ensure profile exists (should be created by signal, but just in case)
-        from .models import Profile
         if not hasattr(user, 'profile'):
             Profile.objects.create(user=user)
         
-        messages.success(request, f"Welcome to StudySetU, {user.username}! Your account has been activated. Please complete your profile.")
-        return redirect('profile')
-    
+        messages.success(
+            request,
+            "Your email has been verified successfully. Please log in to continue."
+        )
+        return redirect('auth_toggle')
+
     messages.error(request, "Activation link is invalid or expired.")
     return redirect('auth_toggle')
 
@@ -147,9 +154,6 @@ def send_otp_view(request):
         try:
             user = User.objects.get(email=email)
             otp = str(random.randint(100000, 999999))  # 6-digit OTP
-
-            # Delete old OTPs for this user
-            PasswordResetOTP.objects.filter(user=user).delete()
 
             # Save new OTP in DB
             PasswordResetOTP.objects.create(user=user, otp=otp)

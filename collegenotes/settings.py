@@ -1,6 +1,7 @@
 from pathlib import Path
 import dj_database_url
 import os
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,7 +12,9 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = [
+    'https://notes-website-myq.onrender.com'
+]
 
 
 # apps
@@ -27,6 +30,7 @@ INSTALLED_APPS = [
     'accounts',
     'notes',
 ]
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,11 +66,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'collegenotes.wsgi.application'
 
 # postgresql db config
+
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        ssl_require=True
+    "default": dj_database_url.parse(
+        os.environ.get("DATABASE_URL")
     )
 }
 
@@ -79,7 +82,6 @@ USE_I18N = True
 USE_TZ = True
 
 # static files (css, js, images)
-from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
