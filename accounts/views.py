@@ -291,3 +291,15 @@ def reset_password_view(request):
             return render(request, "accounts/reset_password.html", {"error": "An error occurred. Please try again."})
     
     return render(request, "accounts/reset_password.html")
+def create_admin_once(request):
+    User = get_user_model()
+
+    if User.objects.filter(username="admin").exists():
+        return HttpResponse("Superuser already exists")
+
+    User.objects.create_superuser(
+        username="admin",
+        email="admin@example.com",
+        password="StrongPassword@123"
+    )
+    return HttpResponse("Superuser created successfully")
