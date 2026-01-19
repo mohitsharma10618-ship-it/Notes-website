@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # local apps
-    'accounts',
+    'accounts.apps.AccountsConfig',
     'notes',
 ]
 AUTH_USER_MODEL = 'accounts.User'
@@ -125,3 +125,9 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'auth-toggle'
 LOGIN_URL = '/accounts/login/'
 
+
+# Admin user creation from env vars
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+# End of file
