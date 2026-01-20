@@ -6,5 +6,3 @@ class AccountsConfig(AppConfig):
 
     def ready(self):
         import accounts.signals  # ensures signals are registered
-        from .utils import create_admin_if_not_exists
-        create_admin_if_not_exists()
