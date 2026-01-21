@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from collegenotes.accounts.emails import send_email
+from accounts.emails import send_email
 from django.contrib.auth import authenticate, login, logout ,get_user_model  # ✅ added logout + authenticate
 from django.contrib import messages
 from django.urls import reverse
