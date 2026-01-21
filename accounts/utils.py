@@ -1,21 +1,25 @@
-import resend
+from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
 
-resend.api_key = settings.RESEND_API_KEY
+def send_verification_email(request, user, token):
+    activation_link = request.build_absolute_uri(
+        reverse('activate', kwargs={'token': token})
+    )
 
+    subject = 'Verify your email'
+    message = f'''
+Hi {user.username},
 
-def send_verification_email(email, token):
-    verification_link = f"{settings.FRONTEND_URL}/accounts/verify/{token}/"
+Please verify your email by clicking the link below:
 
-    resend.Emails.send({
-        "from": settings.DEFAULT_FROM_EMAIL,
-        "to": email,
-        "subject": "Verify your email",
-        "html": f"""
-            <h2>Welcome 🎉</h2>
-            <p>Click below to verify your email:</p>
-            <a href="{verification_link}">Verify Email</a>
-            <br><br>
-            <p>If you didn't request this, ignore this email.</p>
-        """
-    })
+{activation_link}
+'''
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [user.email],
+        fail_silently=False,
+    )

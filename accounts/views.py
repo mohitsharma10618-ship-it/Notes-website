@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from accounts.emails import send_email
@@ -8,11 +8,14 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
-from .tokens import account_activation_token  # custom token generator
 from django.conf import settings
 import random
 from .models import PasswordResetOTP  # model to store OTPs
 from .models import Profile
+from .models import EmailVerificationToken
+from django.http import HttpResponse
+from .utils import send_verification_email
+
 
 @login_required
 def profile(request):
@@ -61,84 +64,48 @@ def auth_toggle(request):
 
     return render(request, 'registration/auth_toggle.html')
 
+
 User = get_user_model()
 
 def register(request):
-    if request.method == "POST":
-        username = request.POST.get("username", "").strip()
-        email = request.POST.get("email", "").strip()
-        password1 = request.POST.get("password1")
-        password2 = request.POST.get("password2")
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
 
-        if not username or not email:
-            messages.error(request, "Username and email are required.")
-            return redirect('register')
-
-        if password1 != password2:
-            messages.error(request, "Passwords do not match.")
-            return redirect('register')
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already taken.")
-            return redirect('register')
-        
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered.")
-            return redirect('register')
-
-        user = User.objects.create_user(username=username, email=email, password=password1, is_active=False)
-
-        # Send activation email
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = account_activation_token.make_token(user)
-        activation_link = request.build_absolute_uri(reverse('activate', args=[uid, token]))
-
-        html = render_to_string("accounts/activation_email.html", {
-             "user": user,
-             "activation_link": activation_link,
-        })
-
-        try:
-             send_email(
-                 to=[email],
-                 subject="Activate your StudySetU account",
-                 html=html
-            )
-        except Exception as e:
-             print("Email error:", e)
-
-        messages.success(request, "Check your email to activate your account.")
-        return redirect('auth_toggle')
-    return render(request, 'accounts/register.html')
-
-
-def activate(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except Exception:
-        user = None
-
-    if user and account_activation_token.check_token(user, token):
-        if user.is_active:
-            messages.info(request, "Your account is already activated. Please log in.")
-            return redirect('auth_toggle')
-        
-        user.is_active = True
-        user.save()
-        
-        # Ensure profile exists (should be created by signal, but just in case)
-        if not hasattr(user, 'profile'):
-            Profile.objects.create(user=user)
-        
-        messages.success(
-            request,
-            "Your email has been verified successfully. Please log in to continue."
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            is_active=False
         )
-        return redirect('auth_toggle')
 
-    messages.error(request, "Activation link is invalid or expired.")
-    return redirect('auth_toggle')
+        token_obj = EmailVerificationToken.objects.create(user=user)
+
+        send_verification_email(request, user, token_obj.token)
+
+        return HttpResponse("Check your email to verify your account")
+
+    return render(request, 'register.html')
+
+
+def activate(request, token):
+    try:
+        token_obj = EmailVerificationToken.objects.get(token=token)
+        user = token_obj.user
+
+        user.is_active = True
+        user.is_email_verified = True
+        user.save()
+
+        token_obj.delete()
+
+        return HttpResponse("Email verified successfully. You can login now.")
+
+    except EmailVerificationToken.DoesNotExist:
+        return HttpResponse("Invalid or expired link")
+
+
 
 def send_otp_view(request):
     # Clear any previous debug OTP
@@ -295,3 +262,13 @@ def reset_password_view(request):
             return render(request, "accounts/reset_password.html", {"error": "An error occurred. Please try again."})
     
     return render(request, "accounts/reset_password.html")
+
+def verify_email(request, token):
+    record = get_object_or_404(EmailVerificationToken, token=token)
+    user = record.user
+    user.is_email_verified = True
+    user.save()
+    record.delete()
+    return HttpResponse("Email verified successfully ✅")
+    
+
