@@ -10,7 +10,7 @@ from .models import PasswordResetOTP  # model to store OTPs
 from .models import Profile
 from .models import EmailVerificationToken
 from django.http import HttpResponse
-from .utils import send_verification_email
+from accounts.utils import send_verification_email
 
 
 @login_required
