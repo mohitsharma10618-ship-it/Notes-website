@@ -77,6 +77,7 @@ DATABASES = {
     )
 }
 
+
 # keep empty for dev; add validators in production
 AUTH_PASSWORD_VALIDATORS = []
 
