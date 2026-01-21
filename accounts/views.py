@@ -1,6 +1,10 @@
+import email
+import html
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+
+from collegenotes.accounts.emails import send_email
 from .forms import RegisterForm
 from django.contrib.auth import authenticate, login, logout ,get_user_model  # ✅ added logout + authenticate
 from django.contrib import messages
@@ -8,7 +12,6 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
-from django.core.mail import send_mail
 from .tokens import account_activation_token  # custom token generator
 from django.http import HttpResponse
 from django.conf import settings
@@ -16,6 +19,7 @@ import random
 from .models import PasswordResetOTP  # model to store OTPs
 from django.contrib.auth.hashers import make_password
 from .models import Profile
+from .emails import send_email
 
 @login_required
 def profile(request):
@@ -96,14 +100,17 @@ def register(request):
         token = account_activation_token.make_token(user)
         activation_link = request.build_absolute_uri(reverse('activate', args=[uid, token]))
 
-        subject = "Activate your StudySetU account"
-        message = render_to_string('accounts/activation_email.txt', {
-            'user': user,
-            'activation_link': activation_link,
+        html = render_to_string("accounts/activation_email.html", {
+             "user": user,
+             "activation_link": activation_link,
         })
 
         try:
-             send_mail(subject, message, None, [email])
+             send_email(
+                 to=[email],
+                 subject="Activate your StudySetU account",
+                 html=html
+            )
         except Exception as e:
              print("Email error:", e)
 
@@ -160,12 +167,16 @@ def send_otp_view(request):
 
             # Send OTP via email
             try:
-                send_mail(
+                html = f"""
+                <p>Hello {user.username},</p>
+                <p>Your password reset OTP is: <b>{otp}</b></p>
+                <p>This OTP is valid for 5 minutes.</p>
+                """
+
+                send_email(
+                    to=[email],
                     subject="StudySetU - Password Reset OTP",
-                    message=f"Hello {user.username},\n\nYour password reset OTP is: {otp}\n\nThis code will expire in 5 minutes.\n\nIf you didn't request this, please ignore this email.\n\nBest regards,\nStudySetU Team",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    fail_silently=False,
+                    html=html
                 )
                 request.session["reset_user"] = user.id  # store user in session
                 messages.success(request, f"OTP has been sent to {email}. Please check your inbox.")

@@ -72,3 +72,4 @@ Django>=5.0
 psycopg2-binary
 dj-database-url
 python-decouple
+resend

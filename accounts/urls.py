@@ -8,4 +8,5 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('auth/', views.auth_toggle, name='auth_toggle'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
+    path("verify/<uuid:token>/", views.verify_email, name="verify-email"),
 ]
