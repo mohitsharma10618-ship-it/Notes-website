@@ -1,6 +1,10 @@
+import email
+from math import e
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse
+
+from collegenotes.accounts.emails import send_email
 
 def send_verification_email(request, user, token):
     activation_link = request.build_absolute_uri(
@@ -16,10 +20,11 @@ Please verify your email by clicking the link below:
 {activation_link}
 '''
 
-    send_mail(
-        subject,
-        message,
-        settings.EMAIL_HOST_USER,
-        [user.email],
+    send_email(
+        to=[email],
+        subject=subject,
+        message=message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[user.email],
         fail_silently=False,
     )

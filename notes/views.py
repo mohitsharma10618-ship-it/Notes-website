@@ -1,4 +1,4 @@
-import mimetypes,os
+import os
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
@@ -9,14 +9,11 @@ from django.contrib.auth.decorators import login_required
 from .models import Note
 from .forms import NoteForm
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.files.storage import default_storage
-from.models import Event
-from django.core.mail import send_mail
+from .models import Event
+from accounts.emails import send_email
 
 
 
@@ -58,7 +55,7 @@ def upload_note(request):
             messages.success(request, 'Note uploaded successfully.')
             # 🔔 EMAIL NOTIFICATION (YAHI ADD KARNA HAI)
             users = User.objects.exclude(email='').values_list('email', flat=True)
-            send_mail(
+            send_email(
                 subject="📢 New Notes Uploaded!",
                 message="A new note has been uploaded on NotesSetu. Visit the website to check it out.",
                 from_email=settings.DEFAULT_FROM_EMAIL,

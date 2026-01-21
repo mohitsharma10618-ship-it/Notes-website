@@ -4,10 +4,6 @@ from django.contrib.auth.decorators import login_required
 from accounts.emails import send_email
 from django.contrib.auth import authenticate, login, logout ,get_user_model  # ✅ added logout + authenticate
 from django.contrib import messages
-from django.urls import reverse
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.template.loader import render_to_string
 from django.conf import settings
 import random
 from .models import PasswordResetOTP  # model to store OTPs
