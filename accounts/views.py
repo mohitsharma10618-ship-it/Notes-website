@@ -1,11 +1,7 @@
-import email
-import html
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from collegenotes.accounts.emails import send_email
-from .forms import RegisterForm
 from django.contrib.auth import authenticate, login, logout ,get_user_model  # ✅ added logout + authenticate
 from django.contrib import messages
 from django.urls import reverse
@@ -13,13 +9,10 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from .tokens import account_activation_token  # custom token generator
-from django.http import HttpResponse
 from django.conf import settings
 import random
 from .models import PasswordResetOTP  # model to store OTPs
-from django.contrib.auth.hashers import make_password
 from .models import Profile
-from .emails import send_email
 
 @login_required
 def profile(request):
