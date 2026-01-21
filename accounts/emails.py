@@ -1,12 +1,13 @@
-from resend import Resend
+import resend
 from django.conf import settings
 
-resend = Resend(api_key=settings.RESEND_API_KEY)
+resend.api_key = settings.RESEND_API_KEY
 
-def send_email(to, subject, html):
-    resend.emails.send({
+
+def send_email(to_email, subject, html_content):
+    resend.Emails.send({
         "from": settings.DEFAULT_FROM_EMAIL,
-        "to": to,
+        "to": [to_email],
         "subject": subject,
-        "html": html,
+        "html": html_content,
     })
