@@ -4,7 +4,7 @@ from accounts.emails import send_email
 
 def send_verification_email(request, user, token):
     activation_link = request.build_absolute_uri(
-        reverse('activate', kwargs={'token': token})
+        reverse('verify-email', kwargs={'token': token})
     )
 
     subject = "Verify your email"
