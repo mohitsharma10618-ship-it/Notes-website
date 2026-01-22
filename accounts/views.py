@@ -1,3 +1,4 @@
+import http
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
@@ -66,12 +67,14 @@ def register(request):
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
-        password = request.POST['password']
-
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        if password1 != password2:
+            return http.HttpResponse("Passwords do not match")  
         user = User.objects.create_user(
             username=username,
             email=email,
-            password=password,
+            password=password1,
             is_active=False
         )
 
