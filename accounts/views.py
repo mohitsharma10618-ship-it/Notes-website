@@ -7,7 +7,6 @@ from django.contrib import messages
 from django.conf import settings
 import random
 from .models import PasswordResetOTP  # model to store OTPs
-from .models import Profile
 from .models import EmailVerificationToken
 from django.http import HttpResponse
 from accounts.utils import send_verification_email

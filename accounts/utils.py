@@ -1,6 +1,3 @@
-import email
-from math import e
-from django.conf import settings
 from django.urls import reverse
 
 from accounts.emails import send_email
