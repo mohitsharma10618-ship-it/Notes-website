@@ -10,20 +10,16 @@ def send_verification_email(request, user, token):
         reverse('activate', kwargs={'token': token})
     )
 
-    subject = 'Verify your email'
-    message = f'''
-Hi {user.username},
+    subject = "Verify your email"
 
-Please verify your email by clicking the link below:
-
-{activation_link}
-'''
+    html = f"""
+    <p>Hi {user.username},</p>
+    <p>Please verify your email by clicking the link below:</p>
+    <p><a href="{activation_link}">Verify Email</a></p>
+    """
 
     send_email(
-        to=[email],
+        to=[user.email],
         subject=subject,
-        message=message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email],
-        fail_silently=False,
+        html=html
     )

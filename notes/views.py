@@ -1,7 +1,6 @@
 import os
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.conf import settings
 from django.db.models import Count, Sum
 from django.db.models import Q
 from django.contrib import messages
@@ -55,12 +54,15 @@ def upload_note(request):
             messages.success(request, 'Note uploaded successfully.')
             # 🔔 EMAIL NOTIFICATION (YAHI ADD KARNA HAI)
             users = User.objects.exclude(email='').values_list('email', flat=True)
+
             send_email(
+                to=list(users),
                 subject="📢 New Notes Uploaded!",
-                message="A new note has been uploaded on NotesSetu. Visit the website to check it out.",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=list(users),
-                fail_silently=False,
+                html="""
+                    <h3>New Notes Uploaded!</h3>
+                    <p>A new note has been uploaded on <b>NotesSetu</b>.</p>
+                    <p>Visit the website to check it out.</p>
+                """
             )
             return redirect('note_list')
     else:

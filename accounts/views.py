@@ -85,23 +85,6 @@ def register(request):
     return render(request, 'register.html')
 
 
-def activate(request, token):
-    try:
-        token_obj = EmailVerificationToken.objects.get(token=token)
-        user = token_obj.user
-
-        user.is_active = True
-        user.is_email_verified = True
-        user.save()
-
-        token_obj.delete()
-
-        return HttpResponse("Email verified successfully. You can login now.")
-
-    except EmailVerificationToken.DoesNotExist:
-        return HttpResponse("Invalid or expired link")
-
-
 
 def send_otp_view(request):
     # Clear any previous debug OTP
