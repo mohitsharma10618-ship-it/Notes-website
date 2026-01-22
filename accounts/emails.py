@@ -7,8 +7,8 @@ resend.api_key = settings.RESEND_API_KEY
 
 def send_email(*,to, subject, html):
     resend.Emails.send({
-        "from": settings.DEFAULT_FROM_EMAIL,
-        "to": [to],
+        "from": "onboarding@resend.dev",
+        "to": to,
         "subject": subject,
         "html": html,
     })
