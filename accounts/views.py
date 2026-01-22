@@ -81,7 +81,7 @@ def register(request):
 
         return HttpResponse("Check your email to verify your account")
 
-    return render(request, 'register.html')
+    return render(request, 'accounts/register.html')
 
 
 
