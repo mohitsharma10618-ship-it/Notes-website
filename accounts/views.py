@@ -112,7 +112,7 @@ def send_otp_view(request):
                 """
 
                 send_email(
-                    to=[email],
+                    to=email,
                     subject="StudySetU - Password Reset OTP",
                     html=html
                 )
